@@ -15,7 +15,7 @@ class ProductosController extends Controller
     public function index()
     {
         //dd("Si");
-        return view("productos.index", ["productos"=>Producto::all()]);
+        return view("productos.index", ["productos" => Producto::all()]);
     }
 
     /**
@@ -60,7 +60,12 @@ class ProductosController extends Controller
      */
     public function edit($id)
     {
-        //
+        // dd("SI edit");
+        $p = Producto::find($id);
+
+        return view("productos.edit", [
+            "producto" => $p,
+        ]);
     }
 
     /**
@@ -72,7 +77,14 @@ class ProductosController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
+        $producto = Producto::find($id); //El ID lo estoy recibiendo de la URL enviada
+        $producto->nombre = $request->input('nombre');
+        $producto->precio_venta = $request->input('precio_venta');
+        $producto->existencia = $request->input('existencia');
+        $producto->update();
+
+        return redirect()->route("productos.index")->with(["mensaje" => "Producto actualizado"]);
     }
 
     /**
@@ -83,6 +95,10 @@ class ProductosController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $producto = Producto::find($id); //El ID lo estoy recibiendo de la URL enviada
+        $producto->delete();
+        return redirect()->route("productos.index")->with([
+            "mensaje" => "Producto eliminado",
+        ]);
     }
 }
